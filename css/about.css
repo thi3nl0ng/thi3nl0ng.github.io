@@ -1,0 +1,78 @@
+/*
+|----------------------------------------------------------------------------
+| ABOUT
+|----------------------------------------------------------------------------
+*/
+#about {
+ 
+  margin-bottom: 10px;
+ 
+}
+#about .container .intro {
+  background: #fff;
+  padding: 40px 40px 10px 30px;
+}
+#about .profile-pic {
+  width: 200px;
+  height: 200px;
+  display: inline-block;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
+  
+}
+#about .profile-pic img {
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
+  height: 200px;
+  width: 200px;
+  vertical-align: middle;
+  margin-top: -70px;
+}
+#about .intro-content {
+  text-align: center;
+  margin: 0 auto;
+  float: none;
+}
+#about .intro-content h2 {
+  font-weight: bold;
+  margin: 0px;
+  font-size: 35px;
+  line-height: 52px;
+  opacity: 0.7;
+}
+#about .intro-content span {
+  font-size: 18px;
+  line-height: 34px;
+  color: #8a8a8b;
+  margin-bottom: 25px;
+}
+#about .intro-content p {
+  font-size: 15px;
+  line-height: 27px;
+  opacity: 0.7;
+ 
+  margin-bottom: 40px;
+}
+#about .intro-content .btn {
+  border-color: inherit;
+  text-transform: uppercase;
+  margin: 10px;
+  padding: 5px 30px;
+}
+#about .intro-content .btn a {
+  color: #fff;
+}
+#about .intro-content .btn-info {
+  background-color: #00a9ff;
+  border-color: inherit;
+}
+#about .intro-content .btn-success {
+  background-color: #38de8a;
+  border-color: inherit;
+}
