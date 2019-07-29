@@ -201,7 +201,7 @@ ul#nav li.current a { color: #F06000; }
 
 #about h1 {
    font: 30px/40px 'opensans', sans-serif;
-   color: #fff;
+   /*color: #fff;*/
    margin-bottom: 12px;
 }
 
