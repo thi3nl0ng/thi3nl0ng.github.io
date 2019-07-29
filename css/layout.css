@@ -207,7 +207,7 @@ ul#nav li.current a { color: #F06000; }
 
 #about .name {
    font: 30px/40px 'librebaskerville-italic', sans-serif;
-   color: #fff;
+   /*color: #fff;*/
    margin-bottom: 12px;
 }
 
