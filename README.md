@@ -1,2 +1,2 @@
 https://thi3nl0ng.github.io
-https://thi3nl0ng.github.io/index.html
+https://thi3nl0ng.github.io/HuyDuong_Resume.pdf
