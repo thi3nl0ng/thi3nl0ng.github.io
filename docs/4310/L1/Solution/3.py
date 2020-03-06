@@ -118,7 +118,7 @@ if __name__ == '__main__':
     if (screen != "*"):
         screen = screen + '_tweets.csv'
 
-    tweets_text = loadcorpus(r"D:\Norway\Teaching Assistant\2020 Spring\Labs\Lab1\Solution\datasets",screen)
+    tweets_text = loadcorpus("\Lab1\Solution\datasets",screen)
     word_tokens = tweet_tokenization(tweets_text)
     num = int(input("Enter the number of common words: "))
     
