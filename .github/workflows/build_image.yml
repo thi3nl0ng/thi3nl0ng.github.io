@@ -5,8 +5,8 @@ on:
       - main
     
 jobs:
-  push-encfs-image:
-    name: Push Encrypted FS Image
+  push-docker-image:
+    name: Push Docker Image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
