@@ -1,4 +1,4 @@
-name: Push Image
+name: Push-Image
 on:
   pull_request_target:
     branches:
