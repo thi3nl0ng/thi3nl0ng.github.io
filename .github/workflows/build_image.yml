@@ -1,12 +1,23 @@
 name: Push Image
+
 on:
+  workflow_dispatch:
   pull_request_target:
     branches:
       - main
-    
+    paths:
+      - .github/workflows/ 
+      - docker/**
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/build_image.yml
+      - docker/**
+
 jobs:
-  push-docker-image:
-    name: Push Docker Image
+  push-image:
+    name: Push Image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
