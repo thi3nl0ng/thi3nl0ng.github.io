@@ -3,4 +3,5 @@
 Everyone is welcome to [open an issue on GitHub](../issues/).
 
 
-[Issues](~/issues)
+[Issues](/../../issues)
+
