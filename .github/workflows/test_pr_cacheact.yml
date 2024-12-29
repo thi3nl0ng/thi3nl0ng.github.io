@@ -1,0 +1,52 @@
+# from adnakhan to setup repo as vulnerable with cacheact
+name: PR CI
+on:
+  pull_request_target:
+    branches: 'main'
+
+jobs:
+  test_pr:
+    runs-on: ubuntu-latest  
+    # Don't run for dependabot
+    if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
+    # Restrict GITHUB_TOKEN to no permissions to make this "safe"
+    permissions: {}
+    outputs:
+      result: ${{ steps.run_tests.outputs.status }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          cache: 'npm'
+      - name: run_tests
+        id: run_tests
+        run: |
+          npm install --save-dev
+          npm test
+          retVal=$?
+          if [ $retVal -eq 1 ]; then
+              echo "status=FAILED" >> $GITHUB_OUTPUT
+          else
+              echo "status=SUCCESS" >> $GITHUB_OUTPUT
+          fi
+        continue-on-error: true
+  comment_pr:
+    needs: test_pr
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Comment on Pull Request
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const result = '${{ needs.test_pr.outputs.result }}';
+            const comment = result === 'SUCCESS' ? 'The tests passed!' : 'The tests failed!';
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
