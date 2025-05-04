@@ -23,3 +23,10 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
             -d '{"query":"mutation { serviceScale(id: \"${{ secrets.RAILWAY_SERVICE_ID_BACKEND }}\", input: { replicas: 0 }) { id } }"}'
 
+      - name: Scale down service db (replicas = 0)
+        run: |
+          curl -X POST https://backboard.railway.com/graphql/v2 \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
+            -d '{"query":"mutation { serviceScale(id: \"${{ secrets.RAILWAY_SERVICE_ID_DB }}\", input: { replicas: 0 }) { id } }"}'
+
