@@ -1,0 +1,23 @@
+name: Stop Railway Service at Night
+
+on:
+  schedule:
+    - cron: '0 21 * * *'  # 21:00 UTC (adjust for your timezone)
+
+jobs:
+  stop-service:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scale down service frontend (replicas = 0)
+        run: |
+          curl -X POST https://backboard.railway.com/graphql/v2 \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
+            -d '{"query":"mutation { serviceScale(id: \"${{ secrets.RAILWAY_SERVICE_ID_FRONTEND }}\", input: { replicas: 0 }) { id } }"}'
+      - name: Scale down service backend (replicas = 0)
+        run: |
+          curl -X POST https://backboard.railway.com/graphql/v2 \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
+            -d '{"query":"mutation { serviceScale(id: \"${{ secrets.RAILWAY_SERVICE_ID_BACKEND }}\", input: { replicas: 0 }) { id } }"}'
+
