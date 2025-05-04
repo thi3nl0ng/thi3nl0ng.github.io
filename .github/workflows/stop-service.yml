@@ -2,7 +2,7 @@ name: Stop Railway Service at Night
 
 on:
   schedule:
-    - cron: '0 21 * * *'  # 21:00 UTC (adjust for your timezone)
+    - cron: '0 17 * * *'  #17:00 UTC (adjust for your timezone)
 
 jobs:
   stop-service:
