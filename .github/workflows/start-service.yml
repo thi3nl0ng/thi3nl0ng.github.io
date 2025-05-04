@@ -2,7 +2,9 @@ name: Start Railway Service in the Morning
 
 on:
   schedule:
-    - cron: '0 8 * * *'  # 08:00 UTC (adjust for your timezone)
+    # Start at 8 AM UTC Monday to Friday
+    - cron: '0 8 * * mon-fri'  # Monday to Friday, 8 AM UTC
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
   start-service:
