@@ -2,7 +2,9 @@ name: Stop Railway Service at Night
 
 on:
   schedule:
-    - cron: '0 17 * * *'  #17:00 UTC (adjust for your timezone)
+    # Stop at 9 PM UTC every weekday (Monday to Friday)
+    - cron: '0 21 * * mon-fri'  # Every Monday to Friday at 9 PM UTC
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
   stop-service:
