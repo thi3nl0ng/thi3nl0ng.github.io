@@ -1,32 +1,37 @@
-name: Stop Railway Service at Night
+name: Stop Railway Service at 21:00
 
 on:
   schedule:
-    # Stop at 4 PM UTC every weekday (Monday to Friday)
-    - cron: '0 16 * * mon-fri'  # Every Monday to Friday at 4 PM UTC
-  workflow_dispatch:  # Allows manual triggering
+    # Runs every day at 21:00 UTC
+    - cron: '0 21 * * *'
+  workflow_dispatch:
 
 jobs:
   stop-service:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Scale down service frontend (replicas = 0)
+      - name: Stop Service by Scaling to 0
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          SERVICE_ID: ${{ secrets.RAILWAY_SERVICE_ID_FRONTEND }}
+          ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
+          REGION: ${{ secrets.RAILWAY_REGION }}
         run: |
-          curl -X POST https://backboard.railway.com/graphql/v2 \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
-            -d '{"query":"mutation { serviceScale(id: \"${{ secrets.RAILWAY_SERVICE_ID_FRONTEND }}\", input: { replicas: 0 }) { id } }"}'
-      - name: Scale down service backend (replicas = 0)
-        run: |
-          curl -X POST https://backboard.railway.com/graphql/v2 \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
-            -d '{"query":"mutation { serviceScale(id: \"${{ secrets.RAILWAY_SERVICE_ID_BACKEND }}\", input: { replicas: 0 }) { id } }"}'
-
-      - name: Scale down service db (replicas = 0)
-        run: |
-          curl -X POST https://backboard.railway.com/graphql/v2 \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.RAILWAY_TOKEN }}" \
-            -d '{"query":"mutation { serviceScale(id: \"${{ secrets.RAILWAY_SERVICE_ID_DB }}\", input: { replicas: 0 }) { id } }"}'
-
+          curl -X POST https://backboard.railway.com/graphql/v2  \
+          -H "Content-Type: application/json" \
+          -H "Authorization: Bearer $RAILWAY_TOKEN" \
+          -d '{
+            "query": "mutation StopService($serviceId: String!, $environmentId: String!, $input: ServiceInstanceUpdateInput!) { serviceInstanceUpdate(serviceId: $serviceId, environmentId: $environmentId, input: $input) { id } }",
+            "variables": {
+              "serviceId": "'"$SERVICE_ID"'",
+              "environmentId": "'"$ENVIRONMENT_ID"'",
+              "input": {
+                "multiRegionConfig": {
+                  "'"$REGION"'": {
+                    "numReplicas": 0
+                  }
+                }
+              }
+            }
+          }'
