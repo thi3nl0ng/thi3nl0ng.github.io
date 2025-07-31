@@ -1,5 +1,5 @@
-name: Push Image
 
+name: Push-Image
 on:
   workflow_dispatch:
   pull_request_target:
