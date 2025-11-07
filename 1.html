@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>32-Player Tournament: 4-person Matches</title>
+<style>
+body { font-family: Arial, sans-serif; padding: 20px; }
+table { border-collapse: collapse; margin: 10px; }
+th, td { border: 1px solid #444; padding: 6px 10px; text-align: center; }
+.container { display: flex; justify-content: center; flex-wrap: wrap; }
+.round { display: flex; flex-direction: column; align-items: center; margin: 10px; }
+.round-title { font-weight: bold; margin-bottom: 6px; }
+.match { margin-bottom: 12px; }
+.link { font-size: 12px; color: #555; margin-top: 2px; }
+input { width: 100px; text-align: center; }
+</style>
+</head>
+<body>
+<h1>32-Player Tournament (4 players per match, top 2 advance)</h1>
+<div class="container">
+
+<!-- Round 1 -->
+<div class="round">
+  <div class="round-title">Round 1 - Left</div>
+  <!-- 4 matches -->
+  <div class="match">
+    <table>
+      <tr><td><input placeholder="Player 1"></td></tr>
+      <tr><td><input placeholder="Player 2"></td></tr>
+      <tr><td><input placeholder="Player 3"></td></tr>
+      <tr><td><input placeholder="Player 4"></td></tr>
+    </table>
+    <div class="link">Top 2 → Round 2, Match 1</div>
+  </div>
+  <div class="match">
+    <table>
+      <tr><td><input placeholder="Player 5"></td></tr>
+      <tr><td><input placeholder="Player 6"></td></tr>
+      <tr><td><input placeholder="Player 7"></td></tr>
+      <tr><td><input placeholder="Player 8"></td></tr>
+    </table>
+    <div class="link">Top 2 → Round 2, Match 1</div>
+  </div>
+  <div class="match">
+    <table>
+      <tr><td><input placeholder="Player 9"></td></tr>
+      <tr><td><input placeholder="Player 10"></td></tr>
+      <tr><td><input placeholder="Player 11"></td></tr>
+      <tr><td><input placeholder="Player 12"></td></tr>
+    </table>
+    <div class="link">Top 2 → Round 2, Match 2</div>
+  </div>
+  <div class="match">
+    <table>
+      <tr><td><input placeholder="Player 13"></td></tr>
+      <tr><td><input placeholder="Player 14"></td></tr>
+      <tr><td><input placeholder="Player 15"></td></tr>
+      <tr><td><input placeholder="Player 16"></td></tr>
+    </table>
+    <div class="link">Top 2 → Round 2, Match 2</div>
+  </div>
+</div>
+
+<div class="round">
+  <div class="round-title">Round 1 - Right</div>
+  <!-- 4 matches -->
+  <div class="match">
+    <table>
+      <tr><td><input placeholder="Player 17"></td></tr>
+      <tr><td><input placeholder="Player 18"></td></tr>
+      <tr><td><input placeholder="Player 19"></td></tr>
+      <tr><td><input placeholder="Player 20"></td></tr>
+    </table>
+    <div class="link">Top 2 → Round 2, Match 3</div>
+  </div>
+  <div class="match">
+    <table>
+      <tr><td><input placeholder="Player 21"></td></tr>
+      <tr><td><input placeholder="Player 22"></td></tr>
+      <tr><td><input placeholder="Player 23"></td></tr>
+      <tr><td><input placeholder="Player 24"></td></tr>
+    </table>
+    <div class="link">Top 2 → Round 2, Match 3</div>
+  </div>
+  <div class="match">
+    <table>
+      <tr><td><input placeholder="Player 25"></td></tr>
+      <tr><td><input placeholder="Player 26"></td></tr>
+      <tr><td><input placeholder="Player 27"></td></tr>
+      <tr><td><input placeholder="Player 28"></td></tr>
+    </table>
+    <div class="link">Top 2 → Round 2, Match 4</div>
+  </div>
+  <div class="match">
+    <table>
+      <tr><td><input placeholder="Player 29"></td></tr>
+      <tr><td><input placeholder="Player 30"></td></tr>
+      <tr><td><input placeholder="Player 31"></td></tr>
+      <tr><td><input placeholder="Player 32"></td></tr>
+    </table>
+    <div class="link">Top 2 → Round 2, Match 4</div>
+  </div>
+</div>
+
+<!-- Round 2 -->
+<div class="round">
+  <div class="round-title">Round 2</div>
+  <div class="match">
+    <table>
+      <tr><td><input placeholder="Winner from R1M1"></td></tr>
+      <tr><td><input placeholder="Winner from R1M2"></td></tr>
+      <tr><td><input placeholder="Winner from R1M1"></td></tr>
+      <tr><td><input placeholder="Winner from R1M2"></td></tr>
+    </table>
+    <div class="link">Top 2 → Round 3, Match 1</div>
+  </div>
+  <div class="match">
+    <table>
+      <tr><td><input placeholder="Winner from R1M3"></td></tr>
+      <tr><td><input placeholder="Winner from R1M4"></td></tr>
+      <tr><td><input placeholder="Winner from R1M3"></td></tr>
+      <tr><td><input placeholder="Winner from R1M4"></td></tr>
+    </table>
+    <div class="link">Top 2 → Round 3, Match 2</div>
+  </div>
+  <div class="match">
+    <table>
+      <tr><td><input placeholder="Winner from R1M5"></td></tr>
+      <tr><td><input placeholder="Winner from R1M6"></td></tr>
+      <tr><td><input placeholder="Winner from R1M5"></td></tr>
+      <tr><td><input placeholder="Winner from R1M6"></td></tr>
+    </table>
+    <div class="link">Top 2 → Round 3, Match 3</div>
+  </div>
+  <div class="match">
+    <table>
+      <tr><td><input placeholder="Winner from R1M7"></td></tr>
+      <tr><td><input placeholder="Winner from R1M8"></td></tr>
+      <tr><td><input placeholder="Winner from R1M7"></td></tr>
+      <tr><td><input placeholder="Winner from R1M8"></td></tr>
+    </table>
+    <div class="link">Top 2 → Round 3, Match 4</div>
+  </div>
+</div>
+
+<!-- Round 3 -->
+<div class="round">
+  <div class="round-title">Round 3</div>
+  <div class="match">
+    <table>
+      <tr><td><input placeholder="Winner R2M1"></td></tr>
+      <tr><td><input placeholder="Winner R2M2"></td></tr>
+      <tr><td><input placeholder="Winner R2M1"></td></tr>
+      <tr><td><input placeholder="Winner R2M2"></td></tr>
+    </table>
+    <div class="link">Top 2 → Final</div>
+  </div>
+  <div class="match">
+    <table>
+      <tr><td><input placeholder="Winner R2M3"></td></tr>
+      <tr><td><input placeholder="Winner R2M4"></td></tr>
+      <tr><td><input placeholder="Winner R2M3"></td></tr>
+      <tr><td><input placeholder="Winner R2M4"></td></tr>
+    </table>
+    <div class="link">Top 2 → Final</div>
+  </div>
+</div>
+
+<!-- Final -->
+<div class="round">
+  <div class="round-title">Final</div>
+  <div class="match">
+    <table>
+      <tr><td><input placeholder="Finalist 1"></td></tr>
+      <tr><td><input placeholder="Finalist 2"></td></tr>
+      <tr><td><input placeholder="Finalist 3"></td></tr>
+      <tr><td><input placeholder="Finalist 4"></td></tr>
+    </table>
+    <div class="link">Champion: Top 2</div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
