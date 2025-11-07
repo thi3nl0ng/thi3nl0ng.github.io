@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>32-player Tennis-style Bracket (Fillable)</title>
+  <style>
+    :root{--slot-w:220px;--gap:20px;--line:#333}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;padding:18px;color:#111}
+    h1{font-size:20px;margin:0 0 8px}
+    .controls{display:flex;gap:10px;align-items:center;margin-bottom:12px}
+    button{background:#0b74ff;color:#fff;border:none;padding:8px 10px;border-radius:6px;cursor:pointer}
+    button.ghost{background:#eee;color:#111}
+    label{font-size:14px}
+
+    /* bracket layout */
+    .bracket{display:grid;grid-template-columns:repeat(6, var(--slot-w));gap:var(--gap);align-items:start}
+    .round{display:flex;flex-direction:column;gap:8px}
+    .round h3{margin:0 0 6px;font-size:13px;text-align:center}
+
+    .match{display:flex;flex-direction:column;gap:6px;padding:6px;border-radius:6px;min-height:54px}
+    .slot{display:flex;gap:6px;align-items:center}
+    .name{flex:1}
+    input.name,input.score{width:100%;padding:6px;border:1px solid #ddd;border-radius:6px;font-size:13px}
+    .score{width:60px}
+    .choose{display:flex;gap:6px}
+
+    /* lines visually connecting rounds (simple) */
+    .round{position:relative}
+    .round::before{content:"";position:absolute;left:-10px;top:0;bottom:0;width:10px}
+
+    /* small responsive tweaks */
+    @media (max-width:1100px){:root{--slot-w:180px}}
+    @media (max-width:800px){body{padding:8px}.bracket{grid-template-columns:repeat(3,1fr);}}
+
+    .meta{font-size:12px;color:#555;margin-top:10px}
+    .export-area{margin-top:12px}
+  </style>
+</head>
+<body>
+  <h1>32-player Tennis-style Bracket — Fillable</h1>
+  <div class="controls">
+    <button id="seedBtn">Seed placeholders</button>
+    <button id="resetBtn" class="ghost">Reset</button>
+    <button id="exportBtn" class="ghost">Export CSV</button>
+    <button id="printBtn" class="ghost">Print</button>
+    <label style="margin-left:8px"><input type="checkbox" id="autoAdvance" checked> Auto-advance on score</label>
+  </div>
+
+  <div class="bracket" id="bracket"></div>
+
+  <div class="meta">Tip: Type player names and scores. Click the small "▶" button on a match to push the winner to the next round (or enable auto-advance).</div>
+
+  <script>
+    /* Build structure: rounds array lengths: R1=16 matches, R2=8, QF=4, SF=2, F=1, plus Champion box(optional)
+       We'll render 6 columns: Round of 32, Round of 16, Quarterfinals, Semifinals, Final, Champion
+    */
+
+    const roundsDef = [16,8,4,2,1,1]; // last is champion slot (single)
+    const roundNames = ['Round of 32','Round of 16','Quarterfinals','Semifinals','Final','Champion'];
+    const bracketEl = document.getElementById('bracket');
+    const autoAdvanceCheckbox = document.getElementById('autoAdvance');
+
+    // State stored in DOM inputs; but we may store nothing in JS except quick helpers
+
+    function createInput(id, placeholder=''){
+      const input = document.createElement('input');
+      input.className = 'name';
+      input.placeholder = placeholder;
+      input.id = id;
+      return input;
+    }
+
+    function createScoreInput(id){
+      const input = document.createElement('input');
+      input.className='score';
+      input.placeholder='Score';
+      input.id = id;
+      input.addEventListener('input', onScoreChange);
+      return input;
+    }
+
+    function onScoreChange(e){
+      if(!autoAdvanceCheckbox.checked) return;
+      // find match id from score id pattern r{round}-m{match}-{a|b}-score
+      const parts = e.target.id.split('-');
+      if(parts.length<3) return;
+      const r = parseInt(parts[0].slice(1));
+      const m = parseInt(parts[1].slice(1));
+      tryAutoAdvance(r,m);
+    }
+
+    function build(){
+      bracketEl.innerHTML='';
+      for(let r=0;r<roundsDef.length;r++){
+        const col = document.createElement('div');
+        col.className='round';
+        const title = document.createElement('h3');
+        title.textContent = roundNames[r];
+        col.appendChild(title);
+
+        const matches = roundsDef[r];
+        for(let m=0;m<matches;m++){
+          const match = document.createElement('div');
+          match.className='match';
+          match.dataset.round = r;
+          match.dataset.match = m;
+
+          if(r===roundsDef.length-1){
+            // Champion slot: single simple box
+            const champ = createInput(`r${r}-m${m}-a`,'Champion');
+            champ.addEventListener('input', ()=>{});
+            match.appendChild(champ);
+            col.appendChild(match);
+            continue;
+          }
+
+          const slotA = document.createElement('div');
+          slotA.className='slot';
+          const nameA = createInput(`r${r}-m${m}-a`,`Player`);
+          const scoreA = createScoreInput(`r${r}-m${m}-a-score`);
+          nameA.addEventListener('blur', ()=>{});
+          slotA.appendChild(nameA);
+          slotA.appendChild(scoreA);
+
+          const slotB = document.createElement('div');
+          slotB.className='slot';
+          const nameB = createInput(`r${r}-m${m}-b`,`Player`);
+          const scoreB = createScoreInput(`r${r}-m${m}-b-score`);
+          slotB.appendChild(nameB);
+          slotB.appendChild(scoreB);
+
+          const choose = document.createElement('div');
+          choose.className='choose';
+          const advBtn = document.createElement('button');
+          advBtn.textContent='▶';
+          advBtn.title='Advance chosen winner to next round';
+          advBtn.addEventListener('click', ()=>{manualAdvance(r,m)});
+          choose.appendChild(advBtn);
+
+          match.appendChild(slotA);
+          match.appendChild(slotB);
+          match.appendChild(choose);
+          col.appendChild(match);
+        }
+        bracketEl.appendChild(col);
+      }
+    }
+
+    // Manual advance: choose winner by name or by score comparison
+    function manualAdvance(r,m){
+      const aNameEl = document.getElementById(`r${r}-m${m}-a`);
+      const bNameEl = document.getElementById(`r${r}-m${m}-b`);
+      const aScoreEl = document.getElementById(`r${r}-m${m}-a-score`);
+      const bScoreEl = document.getElementById(`r${r}-m${m}-b-score`);
+      const aName = aNameEl.value.trim();
+      const bName = bNameEl.value.trim();
+      const aScore = parseFloat(aScoreEl.value);
+      const bScore = parseFloat(bScoreEl.value);
+
+      let winner = '';
+      if(!isNaN(aScore) && !isNaN(bScore)){
+        if(aScore>bScore) winner = aName || 'Winner A';
+        else if(bScore>aScore) winner = bName || 'Winner B';
+        else {
+          // tie -> prefer non-empty name or keep empty
+          winner = aName || bName || '';
+        }
+      } else {
+        // no valid scores -> pick A if has name, else B
+        winner = aName || bName || '';
+      }
+
+      pushWinner(r,m,winner);
+    }
+
+    function tryAutoAdvance(r,m){
+      // check both scores exist
+      const aScoreEl = document.getElementById(`r${r}-m${m}-a-score`);
+      const bScoreEl = document.getElementById(`r${r}-m${m}-b-score`);
+      if(!aScoreEl || !bScoreEl) return;
+      const aScore = parseFloat(aScoreEl.value);
+      const bScore = parseFloat(bScoreEl.value);
+      if(isNaN(aScore) || isNaN(bScore)) return;
+      manualAdvance(r,m);
+    }
+
+    function pushWinner(r,m,winnerName){
+      // push to next round slot: next round index is r+1, match index = floor(m/2)
+      const nr = r+1;
+      if(nr>=roundsDef.length) return; // champion column or beyond
+      const nm = Math.floor(m/2);
+      const pos = (m%2===0)?'a':'b';
+      const targetId = `r${nr}-m${nm}-${pos}`;
+      const targetEl = document.getElementById(targetId);
+      if(targetEl){
+        targetEl.value = winnerName;
+      }
+      // if we just filled the final champion field (nr is last index == roundsDef.length-1) and it's single slot, also copy to champion
+      if(nr === roundsDef.length-1){
+        // champion is r{last}-m0-a
+        const champ = document.getElementById(`r${nr}-m0-a`);
+        if(champ) champ.value = winnerName;
+      }
+    }
+
+    // Export CSV: rows of matches by round with names and scores
+    function exportCSV(){
+      const rows = [];
+      for(let r=0;r<roundsDef.length;r++){
+        const matches = roundsDef[r];
+        for(let m=0;m<matches;m++){
+          if(r===roundsDef.length-1){
+            const champ = document.getElementById(`r${r}-m${m}-a`).value || '';
+            rows.push([`Champion`,champ,'','','','']);
+            continue;
+          }
+          const a = document.getElementById(`r${r}-m${m}-a`).value || '';
+          const b = document.getElementById(`r${r}-m${m}-b`).value || '';
+          const sa = document.getElementById(`r${r}-m${m}-a-score`).value || '';
+          const sb = document.getElementById(`r${r}-m${m}-b-score`).value || '';
+          rows.push([`R${r+1}`,`M${m+1}`,a,sa,b,sb]);
+        }
+      }
+      const csv = rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv],{type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;a.download = 'bracket32.csv';a.click();URL.revokeObjectURL(url);
+    }
+
+    // Seed placeholders (1..32) using standard tennis pairing order: 1 vs 32, 16 vs 17, etc.
+    function seedPlaceholders(){
+      // create array of 32 names "Player 1".."Player 32" into r0 matches using mapping i vs (33-i)
+      for(let i=1;i<=16;i++){
+        const aIdx = i; // 1-based
+        const bIdx = 33 - i;
+        const matchIndex = i-1;
+        document.getElementById(`r0-m${matchIndex}-a`).value = `Player ${aIdx}`;
+        document.getElementById(`r0-m${matchIndex}-b`).value = `Player ${bIdx}`;
+        // clear scores
+        document.getElementById(`r0-m${matchIndex}-a-score`).value = '';
+        document.getElementById(`r0-m${matchIndex}-b-score`).value = '';
+      }
+      // clear downstream rounds
+      for(let r=1;r<roundsDef.length;r++){
+        for(let m=0;m<roundsDef[r];m++){
+          if(r===roundsDef.length-1){
+            document.getElementById(`r${r}-m${m}-a`).value='';
+            continue;
+          }
+          document.getElementById(`r${r}-m${m}-a`).value='';
+          document.getElementById(`r${r}-m${m}-b`).value='';
+          if(document.getElementById(`r${r}-m${m}-a-score`)) document.getElementById(`r${r}-m${m}-a-score`).value='';
+          if(document.getElementById(`r${r}-m${m}-b-score`)) document.getElementById(`r${r}-m${m}-b-score`).value='';
+        }
+      }
+    }
+
+    function resetAll(){
+      for(let r=0;r<roundsDef.length;r++){
+        for(let m=0;m<roundsDef[r];m++){
+          if(r===roundsDef.length-1){
+            document.getElementById(`r${r}-m${m}-a`).value='';
+            continue;
+          }
+          document.getElementById(`r${r}-m${m}-a`).value='';
+          document.getElementById(`r${r}-m${m}-b`).value='';
+          document.getElementById(`r${r}-m${m}-a-score`).value='';
+          document.getElementById(`r${r}-m${m}-b-score`).value='';
+        }
+      }
+    }
+
+    document.getElementById('seedBtn').addEventListener('click', seedPlaceholders);
+    document.getElementById('resetBtn').addEventListener('click', ()=>{ if(confirm('Reset all names and scores?')) resetAll(); });
+    document.getElementById('exportBtn').addEventListener('click', exportCSV);
+    document.getElementById('printBtn').addEventListener('click', ()=>window.print());
+
+    // initial render
+    build();
+
+    // after build, we need to create the score inputs for rounds >0 as those elements created earlier inside build
+    // (they already have listeners attached during creation)
+
+  </script>
+</body>
+</html>
