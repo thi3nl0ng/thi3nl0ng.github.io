@@ -6,7 +6,7 @@ on:
 
 jobs:
   eval:
-    runs-on: [self-hosted, linux]
+    #runs-on: [self-hosted, linux]
 
     steps:
     - name: Clean folder
